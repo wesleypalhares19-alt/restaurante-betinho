@@ -1,0 +1,1281 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Restaurante do Betinho</title>
+<script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+<style>
+:root{
+  --azul-escuro:#0b2a4a;
+  --azul-medio:#15609e;
+  --azul-claro:#5bb8ea;
+  --amarelo:#f6c21a;
+  --amarelo-escuro:#d99e00;
+  --bordo:#7a1414;
+  --bordo-escuro:#55100f;
+  --bg:#f6f7fb;
+  --surface:#ffffff;
+  --text:#17202e;
+  --text-muted:#667085;
+  --border:#e3e7ef;
+  --success:#1f8a4c;
+  --danger:#c0392b;
+  --shadow:0 10px 30px rgba(11,42,74,.12);
+  --radius:16px;
+  --radius-sm:10px;
+}
+[data-theme="dark"]{
+  --bg:#0b1220;
+  --surface:#121a2b;
+  --text:#eef2f8;
+  --text-muted:#9aa5b8;
+  --border:#263455;
+  --shadow:0 10px 30px rgba(0,0,0,.4);
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Segoe UI',Roboto,system-ui,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  transition:background .3s,color .3s;
+  padding-bottom:40px;
+}
+button{cursor:pointer;border:none;background:none;font:inherit;}
+input,textarea,select{font-family:inherit;}
+a{color:inherit;text-decoration:none;}
+
+.header{
+  background:linear-gradient(135deg,var(--azul-claro),var(--azul-medio) 55%,var(--azul-escuro));
+  color:#fff;position:sticky;top:0;z-index:50;box-shadow:var(--shadow);
+}
+.header-inner{
+  max-width:1100px;margin:0 auto;display:flex;align-items:center;
+  justify-content:space-between;padding:14px 18px;gap:12px;
+}
+.brand{display:flex;align-items:center;gap:12px;}
+.logo-wrap{
+  width:50px;height:50px;border-radius:50%;
+  background:radial-gradient(circle at 30% 25%,var(--azul-claro),var(--azul-escuro));
+  border:3px solid var(--amarelo);display:flex;align-items:center;justify-content:center;
+  box-shadow:0 4px 10px rgba(0,0,0,.3);flex-shrink:0;
+}
+.brand-text h1{font-size:1.1rem;letter-spacing:.3px;}
+.brand-text p{font-size:.7rem;opacity:.9;margin-top:2px;}
+.header-actions{display:flex;align-items:center;gap:8px;}
+.icon-btn{
+  width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.15);
+  color:#fff;font-size:1.15rem;display:flex;align-items:center;justify-content:center;
+  position:relative;transition:background .2s;
+}
+.icon-btn:hover{background:rgba(255,255,255,.28);}
+.badge{
+  position:absolute;top:-4px;right:-4px;background:var(--bordo);color:#fff;
+  font-size:.65rem;font-weight:700;min-width:18px;height:18px;border-radius:50%;
+  display:none;align-items:center;justify-content:center;border:2px solid var(--azul-escuro);
+}
+.header-info{
+  background:rgba(0,0,0,.18);display:flex;flex-wrap:wrap;gap:16px;
+  padding:8px 18px;font-size:.78rem;max-width:1100px;margin:0 auto;
+}
+
+.hero{max-width:1100px;margin:24px auto 0;padding:0 18px;}
+.hero-card{
+  background:linear-gradient(120deg,var(--amarelo),var(--amarelo-escuro));
+  border-radius:var(--radius);padding:22px 24px;color:var(--bordo-escuro);
+  box-shadow:var(--shadow);display:flex;flex-wrap:wrap;
+  align-items:center;justify-content:space-between;gap:14px;
+}
+.hero-card h2{font-size:1.25rem;margin-bottom:4px;}
+.hero-card p{font-size:.85rem;font-weight:600;opacity:.85;}
+.hero-tags{display:flex;gap:8px;flex-wrap:wrap;}
+.hero-tag{background:var(--bordo);color:#fff;padding:6px 14px;border-radius:999px;font-size:.78rem;font-weight:700;}
+
+.menu-controls{max-width:1100px;margin:22px auto 0;padding:0 18px;display:flex;flex-direction:column;gap:12px;}
+.search-box{
+  display:flex;align-items:center;gap:10px;background:var(--surface);
+  border:1px solid var(--border);border-radius:999px;padding:10px 18px;box-shadow:var(--shadow);
+}
+.search-box input{flex:1;border:none;outline:none;background:transparent;color:var(--text);font-size:.95rem;}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;}
+.chip{
+  flex-shrink:0;padding:8px 16px;border-radius:999px;border:1px solid var(--border);
+  background:var(--surface);font-size:.85rem;font-weight:600;color:var(--text-muted);
+  transition:.2s;white-space:nowrap;
+}
+.chip.active{background:var(--azul-escuro);color:#fff;border-color:var(--azul-escuro);}
+
+.menu-grid{
+  max-width:1100px;margin:18px auto;padding:0 18px;
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;
+}
+.card{
+  background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);
+  overflow:hidden;display:flex;flex-direction:column;border:1px solid var(--border);transition:transform .2s;
+}
+.card:hover{transform:translateY(-3px);}
+.card-img{
+  height:110px;background:linear-gradient(135deg,var(--azul-claro),var(--azul-medio));
+  display:flex;align-items:center;justify-content:center;font-size:2.8rem;position:relative;
+}
+.fav-btn{
+  position:absolute;top:10px;right:10px;width:34px;height:34px;border-radius:50%;
+  background:rgba(255,255,255,.85);display:flex;align-items:center;justify-content:center;
+  font-size:1.1rem;color:var(--bordo);
+}
+.fav-btn.active{background:var(--amarelo);}
+.card-body{padding:14px 16px;display:flex;flex-direction:column;gap:8px;flex:1;}
+.card-body h3{font-size:1.02rem;}
+.card-body p.desc{font-size:.8rem;color:var(--text-muted);line-height:1.4;}
+.qty-stepper{display:flex;align-items:center;gap:0;border:1px solid var(--border);border-radius:10px;overflow:hidden;}
+.qty-stepper button{width:32px;height:32px;background:var(--bg);font-size:18px;font-weight:700;color:var(--text);}
+.qty-stepper button:hover{background:var(--border);}
+.qty-stepper input{width:36px;text-align:center;border:none;background:transparent;font-weight:700;color:var(--text);}
+.add-single-btn{
+  background:var(--bordo);color:#fff;padding:9px 14px;border-radius:var(--radius-sm);
+  font-weight:700;font-size:.85rem;
+}
+.add-single-btn:hover{background:var(--bordo-escuro);}
+
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:90;opacity:0;pointer-events:none;transition:opacity .3s;}
+.overlay.show{opacity:1;pointer-events:all;}
+.drawer{
+  position:fixed;top:0;right:0;height:100%;width:100%;max-width:420px;background:var(--surface);
+  z-index:95;transform:translateX(100%);transition:transform .35s ease;
+  display:flex;flex-direction:column;box-shadow:-10px 0 30px rgba(0,0,0,.2);
+}
+.drawer.open{transform:translateX(0);}
+.drawer-header{
+  padding:18px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);background:var(--azul-escuro);color:#fff;
+}
+.drawer-header button{color:#fff;font-size:1.3rem;}
+.cart-items{flex:1;overflow-y:auto;padding:14px 18px;display:flex;flex-direction:column;gap:12px;}
+.cart-item{display:flex;gap:10px;padding:10px;background:var(--bg);border-radius:var(--radius-sm);border:1px solid var(--border);}
+.cart-item-info{flex:1;}
+.cart-item-info h4{font-size:.9rem;}
+.cart-item-info span.tag{font-size:.72rem;color:var(--text-muted);}
+.qty-control{display:flex;align-items:center;gap:8px;margin-top:6px;}
+.qty-control button{width:26px;height:26px;border-radius:50%;background:var(--azul-medio);color:#fff;font-weight:700;}
+.remove-item{color:var(--danger);font-size:.75rem;font-weight:700;margin-top:4px;cursor:pointer;}
+.empty-cart{text-align:center;color:var(--text-muted);padding:40px 10px;font-size:.9rem;}
+.cart-footer{padding:16px 18px;border-top:1px solid var(--border);}
+.cart-total{display:flex;justify-content:space-between;font-size:1.05rem;margin-bottom:12px;font-weight:700;}
+.btn-primary{
+  width:100%;padding:13px;background:var(--bordo);color:#fff;border-radius:var(--radius-sm);
+  font-weight:700;font-size:.95rem;transition:.2s;
+}
+.btn-primary:hover{background:var(--bordo-escuro);}
+.btn-primary:disabled{opacity:.5;cursor:not-allowed;}
+.btn-secondary{
+  padding:13px 18px;background:var(--border);color:var(--text);border-radius:var(--radius-sm);
+  font-weight:700;font-size:.9rem;width:100%;
+}
+
+.modal{
+  position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.55);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;transition:opacity .25s;padding:16px;
+}
+.modal.show{opacity:1;pointer-events:all;}
+.modal-box{
+  background:var(--surface);border-radius:var(--radius);width:100%;max-width:520px;
+  max-height:90vh;overflow-y:auto;box-shadow:var(--shadow);
+  transform:translateY(20px);transition:transform .25s;
+}
+.modal.show .modal-box{transform:translateY(0);}
+.modal-header{
+  padding:18px 20px;display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--border);position:sticky;top:0;background:var(--surface);z-index:2;
+}
+.modal-header h3{font-size:1.1rem;}
+.modal-header button{font-size:1.3rem;color:var(--text-muted);}
+.modal-body{padding:20px;}
+
+.steps{display:flex;justify-content:space-between;margin-bottom:22px;position:relative;}
+.steps::before{content:"";position:absolute;top:16px;left:0;right:0;height:2px;background:var(--border);z-index:0;}
+.step{display:flex;flex-direction:column;align-items:center;gap:6px;position:relative;z-index:1;flex:1;}
+.step-circle{
+  width:32px;height:32px;border-radius:50%;background:var(--border);color:var(--text-muted);
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.85rem;
+  transition:.25s;border:2px solid var(--surface);
+}
+.step.active .step-circle{background:var(--azul-medio);color:#fff;}
+.step.done .step-circle{background:var(--success);color:#fff;}
+.step-label{font-size:.68rem;color:var(--text-muted);text-align:center;font-weight:600;}
+.step.active .step-label{color:var(--azul-escuro);}
+[data-theme="dark"] .step.active .step-label{color:var(--azul-claro);}
+
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:.8rem;font-weight:700;margin-bottom:6px;color:var(--text-muted);}
+.form-group input,.form-group select,.form-group textarea{
+  width:100%;padding:11px 14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text);font-size:.92rem;outline:none;transition:border .2s;
+}
+.form-group input:focus,.form-group textarea:focus{border-color:var(--azul-medio);}
+.form-row{display:flex;gap:10px;}
+.form-row .form-group{flex:1;}
+
+.delivery-toggle{display:flex;gap:10px;margin-bottom:18px;}
+.delivery-toggle button{
+  flex:1;padding:12px;border-radius:var(--radius-sm);border:1.5px solid var(--border);
+  background:var(--bg);font-weight:700;font-size:.88rem;color:var(--text-muted);
+  display:flex;flex-direction:column;align-items:center;gap:4px;transition:.2s;
+}
+.delivery-toggle button.active{border-color:var(--azul-escuro);background:var(--azul-escuro);color:#fff;}
+.delivery-toggle button span{font-size:1.3rem;}
+
+.pay-options{display:flex;flex-direction:column;gap:10px;margin-bottom:16px;}
+.pay-option{
+  display:flex;align-items:center;gap:12px;padding:14px;border:1.5px solid var(--border);
+  border-radius:var(--radius-sm);cursor:pointer;transition:.2s;
+}
+.pay-option.selected{border-color:var(--azul-escuro);background:rgba(21,96,158,.08);}
+.pay-option .pay-icon{font-size:1.5rem;}
+.pay-option .pay-info h4{font-size:.9rem;}
+.pay-option .pay-info p{font-size:.75rem;color:var(--text-muted);}
+.radio-dot{width:18px;height:18px;border-radius:50%;border:2px solid var(--border);margin-left:auto;flex-shrink:0;position:relative;}
+.pay-option.selected .radio-dot{border-color:var(--azul-escuro);}
+.pay-option.selected .radio-dot::after{content:"";position:absolute;inset:3px;border-radius:50%;background:var(--azul-escuro);}
+
+.pix-box{text-align:center;background:var(--bg);border-radius:var(--radius-sm);padding:18px;margin-top:10px;border:1.5px dashed var(--azul-medio);}
+.pix-box canvas{margin:0 auto;border-radius:8px;}
+.pix-code{display:flex;gap:8px;margin-top:12px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;}
+.pix-code input{flex:1;border:none;background:transparent;font-size:.72rem;color:var(--text-muted);outline:none;}
+.pix-code button{background:var(--azul-escuro);color:#fff;padding:7px 12px;border-radius:8px;font-size:.78rem;font-weight:700;}
+.change-box{margin-top:10px;}
+
+.summary-box{background:var(--bg);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px;border:1px solid var(--border);}
+.summary-row{display:flex;justify-content:space-between;font-size:.85rem;padding:6px 0;gap:10px;}
+.summary-row.total{font-weight:800;font-size:1rem;border-top:1px solid var(--border);margin-top:6px;padding-top:10px;}
+
+.confirm-success{text-align:center;padding:10px 0 20px;}
+.confirm-icon{
+  width:70px;height:70px;border-radius:50%;background:var(--success);color:#fff;
+  font-size:2rem;display:flex;align-items:center;justify-content:center;margin:0 auto 14px;
+}
+.order-number{font-size:1.4rem;font-weight:800;color:var(--azul-escuro);margin-bottom:4px;}
+[data-theme="dark"] .order-number{color:var(--azul-claro);}
+.eta-box{
+  display:flex;align-items:center;justify-content:center;gap:8px;background:var(--amarelo);
+  color:var(--bordo-escuro);font-weight:700;padding:10px;border-radius:var(--radius-sm);margin:14px 0;font-size:.9rem;
+}
+.confirm-actions{display:flex;flex-direction:column;gap:10px;margin-top:10px;}
+.btn-whatsapp{
+  background:#25D366;color:#fff;padding:13px;border-radius:var(--radius-sm);font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:8px;font-size:.92rem;
+}
+.step-nav{display:flex;gap:10px;margin-top:18px;}
+
+.toast{
+  position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);
+  background:var(--azul-escuro);color:#fff;padding:12px 22px;border-radius:999px;
+  font-size:.85rem;font-weight:600;box-shadow:var(--shadow);z-index:200;
+  transition:transform .3s;opacity:0;
+}
+.toast.show{transform:translateX(-50%) translateY(0);opacity:1;}
+
+.order-history-item{border:1px solid var(--border);border-radius:var(--radius-sm);padding:14px;margin-bottom:10px;}
+.order-history-item .oh-head{display:flex;justify-content:space-between;font-weight:700;font-size:.85rem;margin-bottom:6px;}
+.oh-status{font-size:.7rem;padding:3px 10px;border-radius:999px;background:var(--success);color:#fff;font-weight:700;}
+
+footer{
+  max-width:1100px;margin:40px auto 0;padding:24px 18px;text-align:center;
+  color:var(--text-muted);font-size:.8rem;border-top:1px solid var(--border);
+}
+
+@media(max-width:480px){
+  .brand-text h1{font-size:1rem;}
+  .hero-card{padding:18px;}
+  .modal-box{max-height:95vh;}
+}
+</style>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <div class="brand">
+      <div class="logo-wrap">
+        <svg width="34" height="34" viewBox="0 0 64 64">
+          <rect x="14" y="26" width="36" height="22" rx="6" fill="#7a1414"/>
+          <rect x="10" y="22" width="44" height="8" rx="4" fill="#f6c21a"/>
+          <rect x="4" y="22" width="8" height="6" rx="3" fill="#f6c21a"/>
+          <rect x="52" y="22" width="8" height="6" rx="3" fill="#f6c21a"/>
+          <path d="M20 20 Q24 10 18 6" stroke="#5bb8ea" stroke-width="2" fill="none"/>
+          <path d="M32 20 Q36 8 30 4" stroke="#5bb8ea" stroke-width="2" fill="none"/>
+          <path d="M44 20 Q48 10 42 6" stroke="#5bb8ea" stroke-width="2" fill="none"/>
+        </svg>
+      </div>
+      <div class="brand-text">
+        <h1>Restaurante do Betinho</h1>
+        <p>Self Service • Marmitex • Comida Caseira</p>
+      </div>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="themeBtn" title="Alternar tema">🌙</button>
+      <button class="icon-btn" id="historyBtn" title="Meus pedidos">📋</button>
+      <button class="icon-btn" id="cartBtn" title="Carrinho">
+        🛒<span class="badge" id="cartBadge">0</span>
+      </button>
+    </div>
+  </div>
+  <div class="header-info">
+    <span id="statusInfo">🟢 Aberto agora</span>
+    <span>📞 (16) 99315-3943</span>
+  </div>
+</header>
+
+<section class="hero">
+  <div class="hero-card">
+    <div>
+      <h2>Marmitas feitas com carinho 🍲</h2>
+      <p>Escolha o tamanho, monte seu pedido e receba em casa ou retire no balcão</p>
+    </div>
+    <div class="hero-tags">
+      <span class="hero-tag">🛵 Delivery</span>
+      <span class="hero-tag">🏃 Retirada rápida</span>
+    </div>
+  </div>
+</section>
+
+<section class="menu-controls">
+  <div class="search-box">
+    🔎
+    <input type="text" id="searchInput" placeholder="Buscar no cardápio...">
+  </div>
+  <div class="chips" id="chipsRow">
+    <button class="chip active" data-cat="todos">Todos</button>
+    <button class="chip" data-cat="marmitas">Marmitas</button>
+    <button class="chip" data-cat="favoritos">⭐ Favoritos</button>
+  </div>
+</section>
+
+<section class="menu-grid" id="menuGrid"></section>
+
+<footer>
+  <p><strong>Restaurante do Betinho</strong> — (16) 99315-3943</p>
+  <p>Self Service • Prato Feito • Marmitex • Comida Caseira</p>
+</footer>
+
+<div class="overlay" id="cartOverlay"></div>
+<aside class="drawer" id="cartDrawer">
+  <div class="drawer-header">
+    <h3>🛒 Seu carrinho</h3>
+    <button id="closeCart">✕</button>
+  </div>
+  <div class="cart-items" id="cartItemsBox"></div>
+  <div class="cart-footer">
+    <div class="cart-total"><span>Subtotal</span><span id="cartSubtotal">R$ 0,00</span></div>
+    <button class="btn-primary" id="goCheckoutBtn" disabled>Fechar pedido</button>
+  </div>
+</aside>
+
+<div class="modal" id="checkoutModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3 id="checkoutTitle">Finalizar pedido</h3>
+      <button id="closeCheckout">✕</button>
+    </div>
+    <div class="modal-body" id="checkoutBody"></div>
+  </div>
+</div>
+
+<div class="modal" id="historyModal">
+  <div class="modal-box">
+    <div class="modal-header">
+      <h3>📋 Meus pedidos</h3>
+      <button id="closeHistory">✕</button>
+    </div>
+    <div class="modal-body" id="historyBody"></div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ============ CONFIGURAÇÕES GERAIS ============ */
+const WHATSAPP_NUMBER = "5516993153943";
+const PIX_KEY = "16993153943";
+const PIX_MERCHANT = "RESTAURANTE BETINHO";
+const PIX_CITY = "SAO PAULO";
+
+const MENU = [
+  {id:'p', nome:'Marmita P', tamanho:'Pequena', desc:'Ideal para quem quer uma porção individual leve.', preco:22.00, icon:'🍱', cat:'marmitas'},
+  {id:'m', nome:'Marmita M', tamanho:'Média', desc:'Porção equilibrada, a mais pedida pelos clientes.', preco:26.00, icon:'🍛', cat:'marmitas'},
+  {id:'g', nome:'Marmita G', tamanho:'Grande', desc:'Para quem quer comer bem e repetir sem culpa.', preco:29.00, icon:'🍲', cat:'marmitas'},
+];
+
+let state = {
+  theme: localStorage.getItem('betinho_theme') || 'light',
+  cart: JSON.parse(localStorage.getItem('betinho_cart') || '[]'),
+  favoritos: JSON.parse(localStorage.getItem('betinho_fav') || '[]'),
+  pedidos: JSON.parse(localStorage.getItem('betinho_pedidos') || '[]'),
+  filtro: 'todos',
+  busca: '',
+  checkout: {
+    step: 1, modo: 'delivery', nome: '', telefone: '', cep: '',
+    endereco: '', numero: '', bairro: '', complemento: '',
+    pagamento: '', troco: '', obsGeral: ''
+  }
+};
+
+function salvarEstado(){
+  localStorage.setItem('betinho_cart', JSON.stringify(state.cart));
+  localStorage.setItem('betinho_fav', JSON.stringify(state.favoritos));
+  localStorage.setItem('betinho_pedidos', JSON.stringify(state.pedidos));
+  localStorage.setItem('betinho_theme', state.theme);
+}
+
+function formatBRL(v){
+  return v.toLocaleString('pt-BR', {style:'currency', currency:'BRL'});
+}
+
+function toast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2200);
+}
+
+/* ============ RENDERIZAÇÃO DO CARDÁPIO ============ */
+function getFilteredMenu(){
+  return MENU.filter(item=>{
+    const matchBusca = item.nome.toLowerCase().includes(state.busca.toLowerCase());
+    let matchCat = true;
+    if(state.filtro === 'favoritos') matchCat = state.favoritos.includes(item.id);
+    else if(state.filtro !== 'todos') matchCat = item.cat === state.filtro;
+    return matchBusca && matchCat;
+  });
+}
+
+function renderMenu(){
+  const grid = document.getElementById('menuGrid');
+  const lista = getFilteredMenu();
+
+  if(lista.length === 0){
+    grid.innerHTML = `<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--text-muted)">
+      <div style="font-size:2.5rem;margin-bottom:10px">🔍</div>
+      Nenhum item encontrado.
+    </div>`;
+    return;
+  }
+
+  grid.innerHTML = lista.map(item=>{
+    const isFav = state.favoritos.includes(item.id);
+    return `
+      <div class="card" data-id="${item.id}">
+        <div class="card-img">
+          ${item.icon}
+          <button class="fav-btn ${isFav ? 'active':''}" onclick="toggleFavorito('${item.id}')">
+            ${isFav ? '⭐' : '☆'}
+          </button>
+        </div>
+        <div class="card-body">
+          <h3>${item.nome} <small style="color:var(--text-muted);font-weight:400">(${item.tamanho})</small></h3>
+          <p class="desc">${item.desc}</p>
+          <div style="font-weight:800;font-size:1.3rem;color:var(--bordo)">${formatBRL(item.preco)}</div>
+          <div style="display:flex;align-items:center;gap:8px;margin-top:4px;">
+            <div class="qty-stepper">
+              <button onclick="alterarQtdTemp('${item.id}', -1)">−</button>
+              <input type="text" id="qtyTemp_${item.id}" value="1" readonly>
+              <button onclick="alterarQtdTemp('${item.id}', 1)">+</button>
+            </div>
+            <button class="add-single-btn" onclick="addToCart('${item.id}')" style="flex:1">
+              + Adicionar
+            </button>
+          </div>
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function alterarQtdTemp(id, delta){
+  const input = document.getElementById(`qtyTemp_${id}`);
+  let val = parseInt(input.value) + delta;
+  if(val < 1) val = 1;
+  if(val > 20) val = 20;
+  input.value = val;
+}
+
+function toggleFavorito(id){
+  if(state.favoritos.includes(id)){
+    state.favoritos = state.favoritos.filter(f=>f!==id);
+  } else {
+    state.favoritos.push(id);
+    toast('⭐ Adicionado aos favoritos');
+  }
+  salvarEstado();
+  renderMenu();
+}
+
+/* ============ CARRINHO ============ */
+function addToCart(id){
+  const item = MENU.find(i=>i.id===id);
+  const inputQtd = document.getElementById(`qtyTemp_${id}`);
+  const qtd = inputQtd ? parseInt(inputQtd.value) : 1;
+
+  const existente = state.cart.find(c=>c.id===id);
+  if(existente){
+    existente.qtd += qtd;
+  } else {
+    state.cart.push({id: item.id, nome: item.nome, preco: item.preco, qtd: qtd, obs:''});
+  }
+  salvarEstado();
+  renderCart();
+  atualizarBadge();
+  toast(`${item.nome} adicionado ao carrinho! 🛒`);
+  if(inputQtd) inputQtd.value = 1;
+}
+
+function removerDoCarrinho(id){
+  state.cart = state.cart.filter(c=>c.id!==id);
+  salvarEstado();
+  renderCart();
+  atualizarBadge();
+}
+
+function alterarQtdCarrinho(id, delta){
+  const item = state.cart.find(c=>c.id===id);
+  if(!item) return;
+  item.qtd += delta;
+  if(item.qtd <= 0){
+    removerDoCarrinho(id);
+    return;
+  }
+  salvarEstado();
+  renderCart();
+  atualizarBadge();
+}
+
+function atualizarObsItem(id, valor){
+  const item = state.cart.find(c=>c.id===id);
+  if(item) item.obs = valor;
+  salvarEstado();
+}
+
+function getSubtotal(){
+  return state.cart.reduce((acc, item)=> acc + (item.preco * item.qtd), 0);
+}
+
+function getTaxaEntrega(){
+  return state.checkout.modo === 'delivery' ? 5.00 : 0;
+}
+
+function getTotalPedido(){
+  return getSubtotal() + getTaxaEntrega();
+}
+
+function atualizarBadge(){
+  const totalItens = state.cart.reduce((acc, item)=> acc + item.qtd, 0);
+  const badge = document.getElementById('cartBadge');
+  if(totalItens > 0){
+    badge.style.display = 'flex';
+    badge.textContent = totalItens;
+  } else {
+    badge.style.display = 'none';
+  }
+}
+
+function renderCart(){
+  const box = document.getElementById('cartItemsBox');
+  const subtotalEl = document.getElementById('cartSubtotal');
+  const btnCheckout = document.getElementById('goCheckoutBtn');
+
+  if(state.cart.length === 0){
+    box.innerHTML = `
+      <div class="empty-cart">
+        <div style="font-size:2.8rem;margin-bottom:10px">🛒</div>
+        Seu carrinho está vazio.<br>Adicione uma marmita gostosa!
+      </div>`;
+    subtotalEl.textContent = formatBRL(0);
+    btnCheckout.disabled = true;
+    return;
+  }
+
+  box.innerHTML = state.cart.map(item=>`
+    <div class="cart-item">
+      <div class="cart-item-info">
+        <h4>${item.nome}</h4>
+        <span class="tag">${formatBRL(item.preco)} / unidade</span>
+        <div class="qty-control">
+          <button onclick="alterarQtdCarrinho('${item.id}', -1)">−</button>
+          <strong>${item.qtd}</strong>
+          <button onclick="alterarQtdCarrinho('${item.id}', 1)">+</button>
+          <span style="margin-left:auto;font-weight:700">${formatBRL(item.preco * item.qtd)}</span>
+        </div>
+        <input type="text" placeholder="Observação (ex: sem salada)" value="${item.obs || ''}"
+          onchange="atualizarObsItem('${item.id}', this.value)"
+          style="margin-top:8px;width:100%;padding:7px 10px;border-radius:8px;border:1px solid var(--border);background:var(--surface);font-size:.78rem;color:var(--text)">
+        <div class="remove-item" onclick="removerDoCarrinho('${item.id}')">🗑 Remover</div>
+      </div>
+    </div>
+  `).join('');
+
+  subtotalEl.textContent = formatBRL(getSubtotal());
+  btnCheckout.disabled = false;
+}
+
+/* ============ ABRIR / FECHAR DRAWER ============ */
+function abrirCarrinho(){
+  renderCart();
+  document.getElementById('cartOverlay').classList.add('show');
+  document.getElementById('cartDrawer').classList.add('open');
+}
+function fecharCarrinho(){
+  document.getElementById('cartOverlay').classList.remove('show');
+  document.getElementById('cartDrawer').classList.remove('open');
+}
+
+document.getElementById('cartBtn').onclick = abrirCarrinho;
+document.getElementById('closeCart').onclick = fecharCarrinho;
+document.getElementById('cartOverlay').onclick = fecharCarrinho;
+
+/* ============ TEMA ============ */
+function aplicarTema(){
+  document.body.setAttribute('data-theme', state.theme);
+  document.getElementById('themeBtn').textContent = state.theme === 'light' ? '🌙' : '☀️';
+}
+document.getElementById('themeBtn').onclick = function(){
+  state.theme = state.theme === 'light' ? 'dark' : 'light';
+  salvarEstado();
+  aplicarTema();
+};
+
+/* ============ BUSCA E FILTROS ============ */
+document.getElementById('searchInput').addEventListener('input', function(e){
+  state.busca = e.target.value;
+  renderMenu();
+});
+
+document.getElementById('chipsRow').addEventListener('click', function(e){
+  const chip = e.target.closest('.chip');
+  if(!chip) return;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('active'));
+  chip.classList.add('active');
+  state.filtro = chip.dataset.cat;
+  renderMenu();
+});
+
+/* ============ STATUS DE FUNCIONAMENTO ============ */
+function atualizarStatusFuncionamento(){
+  const agora = new Date();
+  const minutosAgora = agora.getHours() * 60 + agora.getMinutes();
+  const abertoAlmoco = minutosAgora >= (11*60) && minutosAgora <= (15*60);
+  const abertoJantar = minutosAgora >= (18*60) && minutosAgora <= (22*60);
+  const aberto = abertoAlmoco || abertoJantar;
+  document.getElementById('statusInfo').textContent = aberto ? '🟢 Aberto agora' : '🔴 Fechado no momento';
+}
+atualizarStatusFuncionamento();
+setInterval(atualizarStatusFuncionamento, 60000);
+
+/* ============ CHECKOUT - ABRIR/FECHAR ============ */
+document.getElementById('goCheckoutBtn').onclick = function(){
+  if(state.cart.length === 0) return;
+  fecharCarrinho();
+  state.checkout.step = 1;
+  abrirCheckout();
+};
+
+function abrirCheckout(){
+  document.getElementById('checkoutModal').classList.add('show');
+  renderCheckoutStep();
+}
+function fecharCheckout(){
+  document.getElementById('checkoutModal').classList.remove('show');
+}
+document.getElementById('closeCheckout').onclick = fecharCheckout;
+
+const STEP_LABELS = ['Revisão', 'Entrega', 'Pagamento', 'Confirmação'];
+
+function renderStepperHTML(){
+  let html = '<div class="steps">';
+  for(let i=1; i<=4; i++){
+    const cls = i < state.checkout.step ? 'done' : (i === state.checkout.step ? 'active' : '');
+    html += `<div class="step ${cls}">
+      <div class="step-circle">${i < state.checkout.step ? '✓' : i}</div>
+      <div class="step-label">${STEP_LABELS[i-1]}</div>
+    </div>`;
+  }
+  html += '</div>';
+  return html;
+}
+
+function renderCheckoutStep(){
+  const body = document.getElementById('checkoutBody');
+  const title = document.getElementById('checkoutTitle');
+  title.textContent = `Finalizar pedido (${state.checkout.step}/4)`;
+
+  let content = renderStepperHTML();
+  if(state.checkout.step === 1) content += renderStep1();
+  else if(state.checkout.step === 2) content += renderStep2();
+  else if(state.checkout.step === 3) content += renderStep3();
+  else if(state.checkout.step === 4) content += renderStep4();
+
+  body.innerHTML = content;
+  attachStepEvents();
+}
+
+/* ============ STEP 1 - REVISÃO ============ */
+function renderStep1(){
+  const itensHtml = state.cart.map(item => `
+    <div class="summary-row">
+      <span>${item.qtd}x ${item.nome} ${item.obs ? `<br><small style="color:var(--text-muted)">Obs: ${item.obs}</small>` : ''}</span>
+      <span>${formatBRL(item.preco * item.qtd)}</span>
+    </div>
+  `).join('');
+
+  return `
+    <div class="summary-box">
+      <h4 style="margin-bottom:10px;font-size:.95rem">📝 Itens do pedido</h4>
+      ${itensHtml}
+      <div class="summary-row total">
+        <span>Subtotal</span>
+        <span>${formatBRL(getSubtotal())}</span>
+      </div>
+    </div>
+    <div class="step-nav">
+      <button class="btn-secondary" onclick="fecharCheckout()" style="flex:1">Continuar comprando</button>
+      <button class="btn-primary" onclick="irParaStep(2)" style="flex:1">Próximo →</button>
+    </div>
+  `;
+}
+
+/* ============ STEP 2 - ENTREGA / RETIRADA ============ */
+function renderStep2(){
+  const c = state.checkout;
+  const isDelivery = c.modo === 'delivery';
+
+  return `
+    <div class="delivery-toggle">
+      <button class="${isDelivery ? 'active' : ''}" onclick="setModoEntrega('delivery')">
+        <span>🛵</span> Delivery
+      </button>
+      <button class="${!isDelivery ? 'active' : ''}" onclick="setModoEntrega('retirada')">
+        <span>🏃</span> Retirada no local
+      </button>
+    </div>
+
+    <div class="form-group">
+      <label>Nome completo *</label>
+      <input type="text" id="inpNome" value="${c.nome}" placeholder="Seu nome">
+    </div>
+    <div class="form-group">
+      <label>Telefone / WhatsApp *</label>
+      <input type="tel" id="inpTelefone" value="${c.telefone}" placeholder="(16) 99999-9999">
+    </div>
+
+    ${isDelivery ? `
+      <div class="form-row">
+        <div class="form-group">
+          <label>CEP *</label>
+          <input type="text" id="inpCep" value="${c.cep}" placeholder="00000-000" maxlength="9">
+        </div>
+        <div class="form-group" style="flex:2">
+          <label>Endereço *</label>
+          <input type="text" id="inpEndereco" value="${c.endereco}" placeholder="Rua, Av...">
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Número *</label>
+          <input type="text" id="inpNumero" value="${c.numero}" placeholder="123">
+        </div>
+        <div class="form-group" style="flex:2">
+          <label>Bairro *</label>
+          <input type="text" id="inpBairro" value="${c.bairro}" placeholder="Bairro">
+        </div>
+      </div>
+      <div class="form-group">
+        <label>Complemento</label>
+        <input type="text" id="inpComplemento" value="${c.complemento}" placeholder="Apto, bloco, referência...">
+      </div>
+      <div class="summary-row" style="background:var(--bg);padding:10px;border-radius:8px;margin-bottom:10px">
+        <span>🛵 Taxa de entrega</span><span>${formatBRL(5.00)}</span>
+      </div>
+    ` : `
+      <div class="summary-row" style="background:rgba(31,138,76,.1);padding:10px;border-radius:8px;margin-bottom:10px;color:var(--success);font-weight:700">
+        <span>✅ Sem taxa</span><span>Pronto em 25-35 min</span>
+      </div>
+    `}
+
+    <div class="step-nav">
+      <button class="btn-secondary" onclick="irParaStep(1)" style="flex:1">← Voltar</button>
+      <button class="btn-primary" onclick="validarStep2()" style="flex:1">Próximo →</button>
+    </div>
+  `;
+}
+
+function setModoEntrega(modo){
+  state.checkout.modo = modo;
+  renderCheckoutStep();
+}
+
+function validarStep2(){
+  const c = state.checkout;
+  c.nome = document.getElementById('inpNome').value.trim();
+  c.telefone = document.getElementById('inpTelefone').value.trim();
+
+  if(!c.nome || !c.telefone){
+    toast('⚠️ Preencha nome e telefone');
+    return;
+  }
+
+  if(c.modo === 'delivery'){
+    c.cep = document.getElementById('inpCep').value.trim();
+    c.endereco = document.getElementById('inpEndereco').value.trim();
+    c.numero = document.getElementById('inpNumero').value.trim();
+    c.bairro = document.getElementById('inpBairro').value.trim();
+    c.complemento = document.getElementById('inpComplemento').value.trim();
+
+    if(!c.cep || !c.endereco || !c.numero || !c.bairro){
+      toast('⚠️ Preencha todos os campos obrigatórios do endereço');
+      return;
+    }
+  }
+
+  irParaStep(3);
+}
+
+async function buscarCep(cep){
+  cep = cep.replace(/\D/g,'');
+  if(cep.length !== 8) return;
+  try{
+    const res = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+    const data = await res.json();
+    if(!data.erro){
+      document.getElementById('inpEndereco').value = data.logradouro || '';
+      document.getElementById('inpBairro').value = data.bairro || '';
+      toast('📍 Endereço encontrado!');
+    }
+  }catch(e){}
+}
+
+/* ============ STEP 3 - PAGAMENTO ============ */
+function renderStep3(){
+  const c = state.checkout;
+  const total = getTotalPedido();
+
+  return `
+    <div class="pay-options">
+      <div class="pay-option ${c.pagamento==='pix' ? 'selected':''}" onclick="selecionarPagamento('pix')">
+        <div class="pay-icon">💠</div>
+        <div class="pay-info"><h4>PIX</h4><p>Pagamento instantâneo via QR Code</p></div>
+        <div class="radio-dot"></div>
+      </div>
+      <div class="pay-option ${c.pagamento==='dinheiro' ? 'selected':''}" onclick="selecionarPagamento('dinheiro')">
+        <div class="pay-icon">💵</div>
+        <div class="pay-info"><h4>Dinheiro</h4><p>Pague na entrega ou retirada</p></div>
+        <div class="radio-dot"></div>
+      </div>
+      <div class="pay-option ${c.pagamento==='cartao' ? 'selected':''}" onclick="selecionarPagamento('cartao')">
+        <div class="pay-icon">💳</div>
+        <div class="pay-info"><h4>Cartão (Débito/Crédito)</h4><p>Maquininha na entrega ou retirada</p></div>
+        <div class="radio-dot"></div>
+      </div>
+    </div>
+
+    <div id="pagamentoExtra">
+      ${c.pagamento === 'pix' ? renderPixBox() : ''}
+      ${c.pagamento === 'dinheiro' ? `
+        <div class="form-group change-Precisa de troco para quanto?</label>
+          <input type="text" id="inpTroco" value="${c.troco}" placeholder="Ex: 50,00 (deixe em branco se não precisar)">
+        </div>
+      ` : ''}
+    </div>
+
+    <div class="summary-box" style="margin-top:14px">
+      <div class="summary-row"><span>Subtotal</span><span>${formatBRL(getSubtotal())}</span></div>
+      <div class="summary-row"><span>Taxa de entrega</span><span>${getTaxaEntrega() > 0 ? formatBRL(getTaxaEntrega()) : 'Grátis'}</span></div>
+      <div class="summary-row total"><span>Total</span><span>${formatBRL(total)}</span></div>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-secondary" onclick="irParaStep(2)" style="flex:1">← Voltar</button>
+      <button class="btn-primary" onclick="validarStep3()" style="flex:1">Próximo →</button>
+    </div>
+  `;
+}
+
+function selecionarPagamento(tipo){
+  state.checkout.pagamento = tipo;
+  renderCheckoutStep();
+}
+
+function validarStep3(){
+  if(!state.checkout.pagamento){
+    toast('⚠️ Selecione uma forma de pagamento');
+    return;
+  }
+  if(state.checkout.pagamento === 'dinheiro'){
+    state.checkout.troco = document.getElementById('inpTroco')?.value.trim() || '';
+  }
+  irParaStep(4);
+}
+
+/* ============ PIX - EMV + CRC16 ============ */
+function pad2(n){ return n.toString().padStart(2,'0'); }
+function emvField(id, value){ return `${id}${pad2(value.length)}${value}`; }
+
+function crc16(payload){
+  let polinomio = 0x1021, resultado = 0xFFFF;
+  for(let i=0; i<payload.length; i++){
+    resultado ^= (payload.charCodeAt(i) << 8);
+    for(let j=0; j<8; j++){
+      resultado = (resultado & 0x8000) !== 0 ? (resultado << 1) ^ polinomio : resultado << 1;
+      resultado &= 0xFFFF;
+    }
+  }
+  return resultado.toString(16).toUpperCase().padStart(4,'0');
+}
+
+function removerAcentos(str){
+  return str.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^\x00-\x7F]/g,'');
+}
+
+function gerarPayloadPix(chave, nome, cidade, valor, txid){
+  nome = removerAcentos(nome).toUpperCase().substring(0,25);
+  cidade = removerAcentos(cidade).toUpperCase().substring(0,15);
+  txid = (txid || '***').substring(0,25);
+
+  const merchantAccountInfo = emvField('26', emvField('00','br.gov.bcb.pix') + emvField('01', chave));
+  const valorStr = valor.toFixed(2);
+
+  let payload =
+    emvField('00','01') + emvField('01','12') + merchantAccountInfo +
+    emvField('52','0000') + emvField('53','986') + emvField('54', valorStr) +
+    emvField('58','BR') + emvField('59', nome) + emvField('60', cidade) +
+    emvField('62', emvField('05', txid));
+
+  payload += '6304';
+  return payload + crc16(payload);
+}
+
+function renderPixBox(){
+  const total = getTotalPedido();
+  const txid = 'BETINHO' + Date.now().toString().slice(-8);
+  const payload = gerarPayloadPix(PIX_KEY, PIX_MERCHANT, PIX_CITY, total, txid);
+
+  setTimeout(()=>{
+    const canvas = document.getElementById('pixCanvas');
+    if(canvas && window.QRCode){
+      QRCode.toCanvas(canvas, payload, {width:180, margin:1}, function(err){ if(err) console.error(err); });
+    }
+  }, 50);
+
+  return `
+    <div class="pix-box">
+      <p style="font-weight:700;margin-bottom:10px">Escaneie o QR Code para pagar</p>
+      <canvas id="pixCanvas"></canvas>
+      <p style="font-size:.8rem;color:var(--text-muted);margin-top:10px">Ou copie o código abaixo:</p>
+      <div class="pix-code">
+        <input type="text" id="pixPayload" value="${payload}" readonly>
+        <button onclick="copiarPix()">Copiar</button>
+      </div>
+      <p style="font-size:.75rem;color:var(--text-muted);margin-top:8px">
+        Valor: <strong>${formatBRL(total)}</strong>
+      </p>
+    </div>
+  `;
+}
+
+function copiarPix(){
+  const input = document.getElementById('pixPayload');
+  input.select();
+  document.execCommand('copy');
+  toast('✅ Código PIX copiado!');
+}
+
+/* ============ STEP 4 - CONFIRMAÇÃO ============ */
+function renderStep4(){
+  const c = state.checkout;
+  const total = getTotalPedido();
+
+  const enderecoTexto = c.modo === 'delivery'
+    ? `${c.endereco}, ${c.numero} - ${c.bairro}${c.complemento ? ' (' + c.complemento + ')' : ''}, CEP ${c.cep}`
+    : 'Retirada no balcão';
+
+  const pagamentoTexto = c.pagamento === 'pix' ? 'PIX'
+    : c.pagamento === 'dinheiro' ? `Dinheiro${c.troco ? ' (troco para R$ ' + c.troco + ')' : ' (sem troco)'}`
+    : 'Cartão (Débito/Crédito)';
+
+  return `
+    <div class="summary-box">
+      <h4 style="margin-bottom:10px">📦 Resumo do pedido</h4>
+      <div class="summary-row"><span>Cliente</span><span>${c.nome}</span></div>
+      <div class="summary-row"><span>Telefone</span><span>${c.telefone}</span></div>
+      <div class="summary-row"><span>${c.modo === 'delivery' ? 'Endereço' : 'Modalidade'}</span><span style="text-align:right;max-width:60%">${enderecoTexto}</span></div>
+      <div class="summary-row"><span>Pagamento</span><span>${pagamentoTexto}</span></div>
+      <hr style="border:none;border-top:1px solid var(--border);margin:8px 0">
+      ${state.cart.map(i => `<div class="summary-row"><span>${i.qtd}x ${i.nome}</span><span>${formatBRL(i.preco*i.qtd)}</span></div>`).join('')}
+      <div class="summary-row"><span>Taxa de entrega</span><span>${getTaxaEntrega() > 0 ? formatBRL(getTaxaEntrega()) : 'Grátis'}</span></div>
+      <div class="summary-row total"><span>Total</span><span>${formatBRL(total)}</span></div>
+    </div>
+
+    <div class="form-group">
+      <label>Observações gerais do pedido (opcional)</label>
+      <textarea id="inpObsGeral" rows="2" placeholder="Ex: Tocar interfone, deixar na portaria...">${c.obsGeral || ''}</textarea>
+    </div>
+
+    <div class="step-nav">
+      <button class="btn-secondary" onclick="irParaStep(3)" style="flex:1">← Voltar</button>
+      <button class="btn-primary" onclick="confirmarPedido()" style="flex:1">✅ Confirmar pedido</button>
+    </div>
+  `;
+}
+
+function irParaStep(n){
+  state.checkout.step = n;
+  renderCheckoutStep();
+}
+
+function attachStepEvents(){
+  const inpCep = document.getElementById('inpCep');
+  if(inpCep){ inpCep.addEventListener('blur', function(){ buscarCep(this.value); }); }
+}
+
+/* ============ CONFIRMAR PEDIDO ============ */
+function gerarNumeroPedido(){
+  return `BET${Date.now().toString().slice(-6)}`;
+}
+
+function montarMensagemWhatsapp(pedido){
+  const linhas = [];
+  linhas.push(`🍲 *NOVO PEDIDO - Restaurante do Betinho*`);
+  linhas.push(`📋 Pedido: *${pedido.numero}*`);
+  linhas.push(``);
+  linhas.push(`👤 *Cliente:* ${pedido.nome}`);
+  linhas.push(`📞 *Telefone:* ${pedido.telefone}`);
+  linhas.push(``);
+
+  if(pedido.modo === 'delivery'){
+    linhas.push(`🛵 *Modalidade:* Delivery`);
+    linhas.push(`📍 *Endereço:* ${pedido.endereco}, ${pedido.numero_end} - ${pedido.bairro}`);
+    if(pedido.complemento) linhas.push(`   Complemento: ${pedido.complemento}`);
+    linhas.push(`   CEP: ${pedido.cep}`);
+  } else {
+    linhas.push(`🏃 *Modalidade:* Retirada no local`);
+  }
+
+  linhas.push(``);
+  linhas.push(`🍱 *Itens:*`);
+  pedido.itens.forEach(i=>{
+    linhas.push(`• ${i.qtd}x ${i.nome} - ${formatBRL(i.preco * i.qtd)}${i.obs ? `\n   _Obs: ${i.obs}_` : ''}`);
+  });
+
+  linhas.push(``);
+  linhas.push(`💰 *Subtotal:* ${formatBRL(pedido.subtotal)}`);
+  linhas.push(`🛵 *Taxa de entrega:* ${pedido.taxa > 0 ? formatBRL(pedido.taxa) : 'Grátis'}`);
+  linhas.push(`💵 *Total: ${formatBRL(pedido.total)}*`);
+  linhas.push(``);
+
+  const pagamentoTexto = pedido.pagamento === 'pix' ? '💠 PIX'
+    : pedido.pagamento === 'dinheiro' ? `💵 Dinheiro${pedido.troco ? ` (troco para R$ ${pedido.troco})` : ' (sem troco)'}`
+    : '💳 Cartão (Débito/Crédito)';
+  linhas.push(`*Forma de pagamento:* ${pagamentoTexto}`);
+
+  if(pedido.obsGeral){
+    linhas.push(``);
+    linhas.push(`📝 *Observações:* ${pedido.obsGeral}`);
+  }
+
+  return linhas.join('\n');
+}
+
+function confirmarPedido(){
+  const c = state.checkout;
+  c.obsGeral = document.getElementById('inpObsGeral')?.value.trim() || '';
+
+  const numero = gerarNumeroPedido();
+  const agora = new Date();
+
+  const pedido = {
+    numero: numero,
+    data: agora.toISOString(),
+    dataFormatada: agora.toLocaleString('pt-BR'),
+    nome: c.nome, telefone: c.telefone, modo: c.modo,
+    endereco: c.endereco || '', numero_end: c.numero || '', bairro: c.bairro || '',
+    complemento: c.complemento || '', cep: c.cep || '',
+    pagamento: c.pagamento, troco: c.troco || '', obsGeral: c.obsGeral,
+    itens: state.cart.map(i => ({...i})),
+    subtotal: getSubtotal(), taxa: getTaxaEntrega(), total: getTotalPedido(),
+    status: 'Pedido recebido'
+  };
+
+  state.pedidos.unshift(pedido);
+  salvarEstado();
+  renderTelaSucesso(pedido);
+
+  state.cart = [];
+  salvarEstado();
+  renderCart();
+  atualizarBadge();
+}
+
+function renderTelaSucesso(pedido){
+  const body = document.getElementById('checkoutBody');
+  const title = document.getElementById('checkoutTitle');
+  title.textContent = 'Pedido confirmado! 🎉';
+
+  const tempoEstimado = pedido.modo === 'delivery' ? '40-55 minutos' : '25-35 minutos';
+  const mensagemEncoded = encodeURIComponent(montarMensagemWhatsapp(pedido));
+  const linkWhatsapp = `https://wa.me/${WHATSAPP_NUMBER}?text=${mensagemEncoded}`;
+
+  body.innerHTML = `
+    <div class="confirm-success">
+      <div class="confirm-icon">✓</div>
+      <div class="order-number">Pedido ${pedido.numero}</div>
+      <p style="color:var(--text-muted);font-size:.9rem">Seu pedido foi registrado com sucesso!</p>
+
+      <div class="eta-box">⏱ Tempo estimado: ${tempoEstimado}</div>
+
+      <div class="summary-box" style="text-align:left">
+        <div class="summary-row"><span>Cliente</span><span>${pedido.nome}</span></div>
+        <div class="summary-row"><span>Modalidade</span><span>${pedido.modo === 'delivery' ? '🛵 Delivery' : '🏃 Retirada'}</span></div>
+        <div class="summary-row total"><span>Total</span><span>${formatBRL(pedido.total)}</span></div>
+      </div>
+
+      <p style="font-size:.85rem;color:var(--text-muted);margin-bottom:6px">
+        Agora envie seu pedido para a cozinha confirmar:
+      </p>
+
+      <div class="confirm-actions">
+        <a href="${linkWhatsapp}" target="_blank" class="btn-whatsapp">📱 Enviar pedido no WhatsApp</a>
+        <button class="btn-secondary" onclick="copiarResumoPedido('${pedido.numero}')">📋 Copiar resumo do pedido</button>
+        <button class="btn-secondary" onclick="imprimirPedido('${pedido.numero}')">🖨 Imprimir comprovante</button>
+        <button class="btn-primary" onclick="novoPedido()">🍲 Fazer novo pedido</button>
+      </div>
+    </div>
+  `;
+}
+
+function copiarResumoPedido(numero){
+  const pedido = state.pedidos.find(p=>p.numero===numero);
+  if(!pedido) return;
+  const texto = montarMensagemWhatsapp(pedido).replace(/\*/g,'');
+  navigator.clipboard.writeText(texto).then(()=>{
+    toast('✅ Resumo copiado para a área de transferência!');
+  }).catch(()=>{
+    const textarea = document.createElement('textarea');
+    textarea.value = texto;
+    document.body.appendChild(textarea);
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    toast('✅ Resumo copiado!');
+  });
+}
+
+function imprimirPedido(numero){
+  const pedido = state.pedidos.find(p=>p.numero===numero);
+  if(!pedido) return;
+
+  const janela = window.open('', '_blank', 'width=400,height=600');
+  const itensHtml = pedido.itens.map(i => `
+    <tr><td>${i.qtd}x ${i.nome}</td><td style="text-align:right">${formatBRL(i.preco*i.qtd)}</td></tr>
+    ${i.obs ? `<tr><td colspan="2" style="font-size:11px;color:#666">Obs: ${i.obs}</td></tr>` : ''}
+  `).join('');
+
+  janela.document.write(`
+    <html><head><title>Pedido ${pedido.numero}</title>
+    <style>
+      body{font-family:Arial,sans-serif;padding:20px;max-width:320px;margin:0 auto;}
+      h2{text-align:center;margin-bottom:4px;}
+      .sub{text-align:center;font-size:12px;color:#666;margin-bottom:16px;}
+      table{width:100%;border-collapse:collapse;margin-bottom:10px;}
+      td{padding:4px 0;font-size:13px;}
+      .total{font-weight:bold;font-size:16px;border-top:2px dashed #000;padding-top:8px;}
+      .info{font-size:12px;margin:4px 0;}
+      hr{border:none;border-top:1px dashed #999;margin:10px 0;}
+    </style></head>
+    <body>
+      <h2>Restaurante do Betinho</h2>
+      <div class="sub">(16) 99315-3943</div>
+      <hr>
+      <div class="info"><strong>Pedido:</strong> ${pedido.numero}</div>
+      <div class="info"><strong>Data:</strong> ${pedido.dataFormatada}</div>
+      <div class="info"><strong>Cliente:</strong> ${pedido.nome}</div>
+      <div class="info"><strong>Tel:</strong> ${pedido.telefone}</div>
+      <div class="info"><strong>Modo:</strong> ${pedido.modo === 'delivery' ? 'Delivery' : 'Retirada no local'}</div>
+      ${pedido.modo === 'delivery' ? `<div class="info">${pedido.endereco}, ${pedido.numero_end} - ${pedido.bairro}</div>` : ''}
+      <hr><table>${itensHtml}</table><hr>
+      <table>
+        <tr><td>Subtotal</td><td style="text-align:right">${formatBRL(pedido.subtotal)}</td></tr>
+        <tr><td>Taxa entrega</td><td style="text-align:right">${pedido.taxa > 0 ? formatBRL(pedido.taxa) : 'Grátis'}</td></tr>
+        <tr class="total"><td>TOTAL</td><td style="text-align:right">${formatBRL(pedido.total)}</td></tr>
+      </table>
+      <hr>
+      <div class="info">Pagamento: ${pedido.pagamento === 'pix' ? 'PIX' : pedido.pagamento === 'dinheiro' ? 'Dinheiro' : 'Cartão'}</div>
+      <p style="text-align:center;margin-top:16px;font-size:12px;">Obrigado pela preferência! 🍲</p>
+      <script>window.print();<\/script>
+    </body></html>
+  `);
+  janela.document.close();
+}
+
+function novoPedido(){
+  fecharCheckout();
+  state.checkout = {
+    step: 1, modo: 'delivery', nome: '', telefone: '', cep: '',
+    endereco: '', numero: '', bairro: '', complemento: '',
+    pagamento: '', troco: '', obsGeral: ''
+  };
+}
+
+/* ============ HISTÓRICO DE PEDIDOS ============ */
+document.getElementById('historyBtn').onclick = abrirHistorico;
+document.getElementById('closeHistory').onclick = () => {
+  document.getElementById('historyModal').classList.remove('show');
+};
+
+function abrirHistorico(){
+  const body = document.getElementById('historyBody');
+
+  if(state.pedidos.length === 0){
+    body.innerHTML = `
+      <div class="empty-cart">
+        <div style="font-size:2.8rem;margin-bottom:10px">📋</div>
+        Você ainda não fez nenhum pedido.
+      </div>`;
+  } else {
+    body.innerHTML = state.pedidos.map(p => `
+      <div class="order-history-item">
+        <div class="oh-head"><span>${p.numero}</span><span class="oh-status">${p.status}</span></div>
+        <div style="font-size:.8rem;color:var(--text-muted);margin-bottom:6px">${p.dataFormatada}</div>
+        <div style="font-size:.85rem;margin-bottom:8px">${p.itens.map(i=>`${i.qtd}x ${i.nome}`).join(', ')}</div>
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <strong>${formatBRL(p.total)}</strong>
+          <button class="btn-secondary" style="padding:8px 14px;font-size:.78rem;width:auto" onclick="reabrirWhatsapp('${p.numero}')">📱 Reenviar WhatsApp</button>
+        </div>
+      </div>
+    `).join('');
+  }
+
+  document.getElementById('historyModal').classList.add('show');
+}
+
+function reabrirWhatsapp(numero){
+  const pedido = state.pedidos.find(p=>p.numero===numero);
+  if(!pedido) return;
+  const mensagem = encodeURIComponent(montarMensagemWhatsapp(pedido));
+  window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${mensagem}`, '_blank');
+}
+
+document.getElementById('checkoutModal').addEventListener('click', function(e){
+  if(e.target === this) fecharCheckout();
+});
+document.getElementById('historyModal').addEventListener('click', function(e){
+  if(e.target === this) this.classList.remove('show');
+});
+
+/* ============ INICIALIZAÇÃO ============ */
+aplicarTema();
+renderMenu();
+renderCart();
+atualizarBadge();
+</script>
+</body>
+</html>
+
+---
